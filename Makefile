@@ -23,9 +23,12 @@ zopfli:
 	$(CC) $(ZOPFLILIB_SRC) $(ZOPFLIBIN_SRC) $(CFLAGS) -o zopfli
 
 # Zopfli shared library
+libzopfli.so: libzopfli
+
 libzopfli:
 	$(CC) $(ZOPFLILIB_SRC) $(CFLAGS) -fPIC -c
 	$(CC) $(ZOPFLILIB_OBJ) $(CFLAGS) -shared -Wl,-soname,libzopfli.so.1 -o libzopfli.so.1.0.1
+	ln -s -f libzopfli.so.1.0.1 libzopfli.so
 
 # ZopfliPNG binary
 zopflipng:
