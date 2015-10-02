@@ -166,14 +166,14 @@ int main(int argc, char* argv[]) {
     }
     else if (StringsEqual(arg, "-h")) {
       fprintf(stderr,
-          "Usage: zopfli [OPTION]... FILE...\n"
+          "Usage: %s [OPTION]... FILE...\n"
           "  -h    gives this help\n"
           "  -c    write the result on standard output, instead of disk"
           " filename + '.gz'\n"
           "  -v    verbose mode\n"
           "  --i#  perform # iterations (default 15). More gives"
           " more compression but is slower."
-          " Examples: --i10, --i50, --i1000\n");
+          " Examples: --i10, --i50, --i1000\n",argv[0]);
       fprintf(stderr,
           "  --gzip        output to gzip format (default)\n"
           "  --zlib        output to zlib format instead of gzip\n"
