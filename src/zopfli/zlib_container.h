@@ -44,7 +44,7 @@ void ZopfliZlibCompress(const ZopfliOptions* options,
                         unsigned char** out, size_t* outsize);
 
 #ifdef __cplusplus
-}  // extern "C"
+}  /* extern "C" */
 #endif
 
 #endif  /* ZOPFLI_ZLIB_H_ */

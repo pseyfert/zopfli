@@ -80,7 +80,7 @@ double ZopfliCalculateBlockSize(const unsigned short* litlens,
                                 size_t lstart, size_t lend, int btype);
 
 #ifdef __cplusplus
-}  // extern "C"
+}  /* extern "C" */
 #endif
 
 #endif  /* ZOPFLI_DEFLATE_H_ */
