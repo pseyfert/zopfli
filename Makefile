@@ -1,8 +1,8 @@
 CC = gcc
 CXX = g++
 
-CFLAGS = -W -Wall -Wextra -ansi -pedantic -lm -O2
-CXXFLAGS = -W -Wall -Wextra -ansi -pedantic -O2
+CFLAGS = -W -Wall -Wextra -ansi -pedantic -lm -O2 -g
+CXXFLAGS = -W -Wall -Wextra -ansi -pedantic -O2 -g
 
 ZOPFLILIB_SRC = src/zopfli/blocksplitter.c src/zopfli/cache.c\
                 src/zopfli/deflate.c src/zopfli/gzip_container.c\
@@ -16,28 +16,31 @@ LODEPNG_SRC := src/zopflipng/lodepng/lodepng.cpp src/zopflipng/lodepng/lodepng_u
 ZOPFLIPNGLIB_SRC := src/zopflipng/zopflipng_lib.cc
 ZOPFLIPNGBIN_SRC := src/zopflipng/zopflipng_bin.cc
 
-.PHONY: zopfli zopflipng
+.PHONY: zopfli zopflipng libzopfli
 
 # Zopfli binary
-zopfli:
-	$(CC) $(ZOPFLILIB_SRC) $(ZOPFLIBIN_SRC) $(CFLAGS) -o zopfli
+zopfli: $(ZOPFLILIB_SRC) $(ZOPFLIBIN_SRC)
+	$(CC) $^ $(CFLAGS) -o $@
 
 # Zopfli shared library
-libzopfli.so: libzopfli
+libzopfli: libzopfli.so
 
-libzopfli:
-	$(CC) $(ZOPFLILIB_SRC) $(CFLAGS) -fPIC -c
-	$(CC) $(ZOPFLILIB_OBJ) $(CFLAGS) -shared -Wl,-soname,libzopfli.so.1 -o libzopfli.so.1.0.1
-	ln -s -f libzopfli.so.1.0.1 libzopfli.so
+$(ZOPFLILIB_OBJ): $(ZOPFLILIB_SRC)
+	$(CC) $^ $(CFLAGS) -fPIC -c
+
+libzopfli.so.1.0.1: $(ZOPFLILIB_OBJ)
+	$(CC) $^ $(CFLAGS) -shared -Wl,-soname,libzopfli.so.1 -o $@
+
+libzopfli.so: libzopfli.so.1.0.1
+	ln -s -f $< $@
 
 # ZopfliPNG binary
-zopflipng:
-	$(CC) $(ZOPFLILIB_SRC) $(CFLAGS) -c
+zopflipng: $(ZOPFLILIB_OBJ)
+	#$(CC) $(ZOPFLILIB_SRC) $(CFLAGS) -c # REVISIT
 	$(CXX) $(ZOPFLILIB_OBJ) $(LODEPNG_SRC) $(ZOPFLIPNGLIB_SRC) $(ZOPFLIPNGBIN_SRC) $(CFLAGS) -o zopflipng
 
 # ZopfliPNG shared library
-libzopflipng:
-	$(CC) $(ZOPFLILIB_SRC) $(CFLAGS) -fPIC -c
+libzopflipng: $(ZOPFLILIB_OBJ)
 	$(CXX) $(ZOPFLILIB_OBJ) $(LODEPNG_SRC) $(ZOPFLIPNGLIB_SRC) $(CFLAGS) -fPIC --shared -Wl,-soname,libzopflipng.so.1 -o libzopflipng.so.1.0.0
 
 # Remove all libraries and binaries
